@@ -9,7 +9,7 @@ export class CheckError {
 
   get message() {
     const { path, reason } = this;
-    const pathEnd = path[path.length - 1];
+    const pathEnd = path[0];
     const printedPath = path.join("\n\t");
 
     return `CheckError: check "${pathEnd}" ${reason} at:\n\t${printedPath}`;
@@ -79,6 +79,19 @@ export const isBool = value => {
   }
 };
 
+export const isArray = value => {
+  const passed = Array.isArray(value);
+  if (!passed) {
+    throw new CheckError({
+      value,
+      path: ["isArray"],
+      reason: `expected an array but received \n\n\t${print(value)}\n\n`,
+    });
+  } else {
+    return value;
+  }
+};
+
 const isValReason = (expected, value) => {
   return `expected value
 
@@ -103,6 +116,34 @@ export const isVal = expected => value => {
   } else {
     return value;
   }
+};
+
+export const isArrayOf = (check, options) => value => {
+  const name =
+    typeof (options && options.name) === "string" ? options.name : "isArrayOf";
+
+  if (!Array.isArray(value)) {
+    throw new CheckError({
+      value,
+      path: [name],
+      reason: `expected an array but received ${print(value)}`,
+    });
+  }
+
+  const checkElement = (element, i) => {
+    try {
+      check(element);
+    } catch (error) {
+      throw new CheckError({
+        value: element,
+        path: [...error.path, `${name}[${i}]`],
+        reason: error.reason,
+      });
+    }
+  };
+
+  value.forEach(checkElement);
+  return value;
 };
 
 export const isInstanceOf = constructor => {

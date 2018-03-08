@@ -6,6 +6,8 @@ import {
   isBool,
   isVal,
   isObjectWithShape,
+  isArray,
+  isArrayOf,
 } from "./index";
 
 describe("isNumber", () => {
@@ -62,6 +64,16 @@ describe("isBool", () => {
   });
 });
 
+describe(`isArray`, () => {
+  test(`passing an array to isArray returns the array`, () => {
+    expect(isArray([1, 2, 3])).toEqual([1, 2, 3]);
+  });
+
+  test(`passing non-array throws a CheckError`, () => {
+    expect(() => isArray(false)).toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe("isVal", () => {
   test(`passing number returns the number`, () => {
     expect(isVal(6)(6)).toEqual(6);
@@ -99,6 +111,24 @@ describe("isVal", () => {
     expect(() => isSimpleObject({ a: 1 })).toThrowErrorMatchingSnapshot();
     expect(() =>
       isNestedObject({ num: 1, arr: [1, "b"], obj: { a: 2 } })
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe("isArrayOf", () => {
+  const isArrayOfStrings = isArrayOf(isString, { name: "isArrayOfStrings" });
+
+  test(`returns array when given correct values`, () => {
+    expect(isArrayOfStrings(["a", "b", "c"])).toEqual(["a", "b", "c"]);
+  });
+
+  test(`passing non-array when expecting array throws CheckError`, () => {
+    expect(() => isArrayOfStrings(5)).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing array with element that fails test throws CheckError`, () => {
+    expect(() =>
+      isArrayOfStrings(["a", 2, "c"])
     ).toThrowErrorMatchingSnapshot();
   });
 });

@@ -1,5 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`isArray passing non-array throws a CheckError 1`] = `
+"CheckError: check \\"isArray\\" expected an array but received 
+
+	false
+
+ at:
+	isArray"
+`;
+
+exports[`isArrayOf passing array with element that fails test throws CheckError 1`] = `
+"CheckError: check \\"isString\\" expected a string but received 
+
+	2
+
+ at:
+	isString
+	isArrayOfStrings[1]"
+`;
+
+exports[`isArrayOf passing non-array when expecting array throws CheckError 1`] = `
+"CheckError: check \\"isArrayOfStrings\\" expected an array but received 5 at:
+	isArrayOfStrings"
+`;
+
 exports[`isBool passing non-boolean falsey values throws a CheckError 1`] = `
 "CheckError: check \\"isBool\\" expected a boolean but received 
 
@@ -87,13 +111,13 @@ exports[`isObjectWithShape passing object missing required key throws CheckError
 `;
 
 exports[`isObjectWithShape passing object with nested missing property in req throws error 1`] = `
-"CheckError: check \\"isPerson.name\\" expected a property \\"surname\\" at:
+"CheckError: check \\"isName.surname\\" expected a property \\"surname\\" at:
 	isName.surname
 	isPerson.name"
 `;
 
 exports[`isObjectWithShape passing object with nested wrong property in opt throws error 1`] = `
-"CheckError: check \\"isPerson.name\\" expected a string but received 
+"CheckError: check \\"isString\\" expected a string but received 
 
 	false
 
@@ -104,7 +128,7 @@ exports[`isObjectWithShape passing object with nested wrong property in opt thro
 `;
 
 exports[`isObjectWithShape passing object with nested wrong property in req throws error 1`] = `
-"CheckError: check \\"isPerson.name\\" expected a string but received 
+"CheckError: check \\"isString\\" expected a string but received 
 
 	5
 
@@ -115,7 +139,7 @@ exports[`isObjectWithShape passing object with nested wrong property in req thro
 `;
 
 exports[`isObjectWithShape passing object with wrong property in opt throws error 1`] = `
-"CheckError: check \\"isPerson.dateOfBirth\\" expected an integer but received 
+"CheckError: check \\"isInteger\\" expected an integer but received 
 
 	199.5
 
@@ -125,7 +149,7 @@ exports[`isObjectWithShape passing object with wrong property in opt throws erro
 `;
 
 exports[`isObjectWithShape passing object with wrong property in req throws error 1`] = `
-"CheckError: check \\"isPerson.firstName\\" expected a string but received 
+"CheckError: check \\"isString\\" expected a string but received 
 
 	5
 
