@@ -1,0 +1,248 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`isBool passing non-boolean falsey values throws a CheckError 1`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	undefined
+
+ at:
+	isBool"
+`;
+
+exports[`isBool passing non-boolean falsey values throws a CheckError 2`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	null
+
+ at:
+	isBool"
+`;
+
+exports[`isBool passing non-boolean falsey values throws a CheckError 3`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	0
+
+ at:
+	isBool"
+`;
+
+exports[`isBool passing non-boolean truthy values throws a CheckError 1`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	\\"a\\"
+
+ at:
+	isBool"
+`;
+
+exports[`isBool passing non-boolean truthy values throws a CheckError 2`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	1
+
+ at:
+	isBool"
+`;
+
+exports[`isBool passing non-boolean truthy values throws a CheckError 3`] = `
+"CheckError: check \\"isBool\\" expected a boolean but received 
+
+	[]
+
+ at:
+	isBool"
+`;
+
+exports[`isInteger passing float throws a CheckError 1`] = `
+"CheckError: check \\"isInteger\\" expected an integer but received 
+
+	5.1
+
+ at:
+	isInteger"
+`;
+
+exports[`isInteger passing string throws a CheckError 1`] = `
+"CheckError: check \\"isInteger\\" expected an integer but received 
+
+	\\"f\\"
+
+ at:
+	isInteger"
+`;
+
+exports[`isNumber passing a string throws a CheckError 1`] = `
+"CheckError: check \\"isNumber\\" expected a number but received 
+
+	\\"s\\"
+
+ at:
+	isNumber"
+`;
+
+exports[`isObjectWithShape passing object missing required key throws CheckError 1`] = `
+"CheckError: check \\"isPerson.dateOfBirth\\" expected a property \\"dateOfBirth\\" at:
+	isPerson.dateOfBirth"
+`;
+
+exports[`isObjectWithShape passing object with nested missing property in req throws error 1`] = `
+"CheckError: check \\"isPerson.name\\" expected a property \\"surname\\" at:
+	isName.surname
+	isPerson.name"
+`;
+
+exports[`isObjectWithShape passing object with nested wrong property in opt throws error 1`] = `
+"CheckError: check \\"isPerson.name\\" expected a string but received 
+
+	false
+
+ at:
+	isString
+	isName.title
+	isPerson.name"
+`;
+
+exports[`isObjectWithShape passing object with nested wrong property in req throws error 1`] = `
+"CheckError: check \\"isPerson.name\\" expected a string but received 
+
+	5
+
+ at:
+	isString
+	isName.surname
+	isPerson.name"
+`;
+
+exports[`isObjectWithShape passing object with wrong property in opt throws error 1`] = `
+"CheckError: check \\"isPerson.dateOfBirth\\" expected an integer but received 
+
+	199.5
+
+ at:
+	isInteger
+	isPerson.dateOfBirth"
+`;
+
+exports[`isObjectWithShape passing object with wrong property in req throws error 1`] = `
+"CheckError: check \\"isPerson.firstName\\" expected a string but received 
+
+	5
+
+ at:
+	isString
+	isPerson.firstName"
+`;
+
+exports[`isString passing an object throws a CheckError 1`] = `
+"CheckError: check \\"isString\\" expected a string but received 
+
+	{\\"a\\":5}
+
+ at:
+	isString"
+`;
+
+exports[`isVal passing wrong number throws CheckError 1`] = `
+"CheckError: check \\"isVal(5)\\" expected value
+
+  5
+  
+but received
+
+  6
+  
+ at:
+	isVal(5)"
+`;
+
+exports[`isVal passing wrong value when expecting array throws CheckError 1`] = `
+"CheckError: check \\"isVal()\\" expected value
+
+  []
+  
+but received
+
+  5
+  
+ at:
+	isVal()"
+`;
+
+exports[`isVal passing wrong value when expecting array throws CheckError 2`] = `
+"CheckError: check \\"isVal(1,2,3)\\" expected value
+
+  [1,2,3]
+  
+but received
+
+  [1,2,2]
+  
+ at:
+	isVal(1,2,3)"
+`;
+
+exports[`isVal passing wrong value when expecting nested array throws CheckError 1`] = `
+"CheckError: check \\"isVal(1,2,3)\\" expected value
+
+  [1,2,[3]]
+  
+but received
+
+  [1,2,[4]]
+  
+ at:
+	isVal(1,2,3)"
+`;
+
+exports[`isVal passing wrong value when expecting object throws CheckError 1`] = `
+"CheckError: check \\"isVal([object Object])\\" expected value
+
+  {}
+  
+but received
+
+  5
+  
+ at:
+	isVal([object Object])"
+`;
+
+exports[`isVal passing wrong value when expecting object throws CheckError 2`] = `
+"CheckError: check \\"isVal([object Object])\\" expected value
+
+  {}
+  
+but received
+
+  {\\"a\\":1}
+  
+ at:
+	isVal([object Object])"
+`;
+
+exports[`isVal passing wrong value when expecting object throws CheckError 3`] = `
+"CheckError: check \\"isVal([object Object])\\" expected value
+
+  {\\"num\\":1,\\"str\\":\\"string\\"}
+  
+but received
+
+  {\\"a\\":1}
+  
+ at:
+	isVal([object Object])"
+`;
+
+exports[`isVal passing wrong value when expecting object throws CheckError 4`] = `
+"CheckError: check \\"isVal([object Object])\\" expected value
+
+  {\\"num\\":1,\\"arr\\":[1,\\"b\\"],\\"obj\\":{\\"a\\":1}}
+  
+but received
+
+  {\\"num\\":1,\\"arr\\":[1,\\"b\\"],\\"obj\\":{\\"a\\":2}}
+  
+ at:
+	isVal([object Object])"
+`;

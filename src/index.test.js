@@ -5,6 +5,7 @@ import {
   isString,
   isBool,
   isVal,
+  isObjectWithShape,
 } from "./index";
 
 describe("isNumber", () => {
@@ -13,12 +14,7 @@ describe("isNumber", () => {
   });
 
   test(`passing a string throws a CheckError`, () => {
-    const expectedError = new CheckError({
-      name: "isNumber",
-      value: "s",
-      path: ["isNumber"],
-    });
-    expect(() => isNumber("s")).toThrowError(expectedError);
+    expect(() => isNumber("s")).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -28,21 +24,11 @@ describe("isInteger", () => {
   });
 
   test(`passing string throws a CheckError`, () => {
-    const expectedError = new CheckError({
-      name: "isInteger",
-      value: "f",
-      path: ["isInteger"],
-    });
-    expect(() => isInteger("f")).toThrow(expectedError);
+    expect(() => isInteger("f")).toThrowErrorMatchingSnapshot();
   });
 
   test(`passing float throws a CheckError`, () => {
-    const expectedError = new CheckError({
-      name: "isInteger",
-      value: 5.1,
-      path: ["isInteger"],
-    });
-    expect(() => isInteger(5.1)).toThrow(expectedError);
+    expect(() => isInteger(5.1)).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -52,12 +38,7 @@ describe("isString", () => {
   });
 
   test(`passing an object throws a CheckError`, () => {
-    const expectedError = new CheckError({
-      name: "isString",
-      value: { a: 5 },
-      path: ["isString"],
-    });
-    expect(() => isString({ a: 5 })).toThrow(expectedError);
+    expect(() => isString({ a: 5 })).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -68,51 +49,16 @@ describe("isBool", () => {
   });
 
   test(`passing non-boolean falsey values throws a CheckError`, () => {
-    expect(() => isBool(undefined)).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: undefined,
-        path: ["isBool"],
-      })
-    );
-    expect(() => isBool(null)).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: null,
-        path: ["isBool"],
-      })
-    );
-    expect(() => isBool(0)).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: 0,
-        path: ["isBool"],
-      })
-    );
+    let error;
+    expect(() => isBool(undefined)).toThrowErrorMatchingSnapshot();
+    expect(() => isBool(null)).toThrowErrorMatchingSnapshot();
+    expect(() => isBool(0)).toThrowErrorMatchingSnapshot();
   });
 
   test(`passing non-boolean truthy values throws a CheckError`, () => {
-    expect(() => isBool("a")).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: "a",
-        path: ["isBool"],
-      })
-    );
-    expect(() => isBool(1)).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: 1,
-        path: ["isBool"],
-      })
-    );
-    expect(() => isBool([])).toThrow(
-      new CheckError({
-        name: "isBool",
-        value: [],
-        path: ["isBool"],
-      })
-    );
+    expect(() => isBool("a")).toThrowErrorMatchingSnapshot();
+    expect(() => isBool(1)).toThrowErrorMatchingSnapshot();
+    expect(() => isBool([])).toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -132,73 +78,221 @@ describe("isVal", () => {
     });
   });
   test(`passing wrong number throws CheckError`, () => {
-    expect(() => isVal(5)(6)).toThrow(
-      new CheckError({
-        name: "isVal(5)",
-        value: 6,
-        path: ["isVal(5)"],
-      })
-    );
+    expect(() => isVal(5)(6)).toThrowErrorMatchingSnapshot();
   });
   test(`passing wrong value when expecting array throws CheckError`, () => {
-    expect(() => isVal([])(5)).toThrow(
-      new CheckError({
-        name: "isVal([])",
-        value: 5,
-        path: ["isVal([])"],
-      })
-    );
-    expect(() => isVal([1, 2, 3])([1, 2, 2])).toThrow(
-      new CheckError({
-        name: "isVal([1,2,3])",
-        value: [1, 2, 2],
-        path: ["isVal([1,2,3])"],
-      })
-    );
+    expect(() => isVal([])(5)).toThrowErrorMatchingSnapshot();
+    expect(() => isVal([1, 2, 3])([1, 2, 2])).toThrowErrorMatchingSnapshot();
   });
   test(`passing wrong value when expecting nested array throws CheckError`, () => {
-    expect(() => isVal([1, 2, [3]])([1, 2, [4]])).toThrow(
-      new CheckError({
-        name: "isVal([1,2,[3]])",
-        value: [1, 2, [4]],
-        path: ["isVal([1,2,[3]])"],
-      })
-    );
+    expect(() =>
+      isVal([1, 2, [3]])([1, 2, [4]])
+    ).toThrowErrorMatchingSnapshot();
   });
   test(`passing wrong value when expecting object throws CheckError`, () => {
     const isEmptyObject = isVal({});
     const isSimpleObject = isVal({ num: 1, str: "string" });
     const isNestedObject = isVal({ num: 1, arr: [1, "b"], obj: { a: 1 } });
 
-    expect(() => isEmptyObject(5)).toThrow(
-      new CheckError({
-        name: "isVal({})",
-        value: 5,
-        path: ["isVal({})"],
-      })
-    );
-    expect(() => isEmptyObject({ a: 1 })).toThrow(
-      new CheckError({
-        name: "isVal({})",
-        value: { a: 1 },
-        path: ["isVal({})"],
-      })
-    );
-    expect(() => isSimpleObject({ a: 1 })).toThrow(
-      new CheckError({
-        name: `isVal({"num":1,"str":"string"})`,
-        value: { a: 1 },
-        path: [`isVal({"num":1,"str":"string"})`],
-      })
-    );
+    expect(() => isEmptyObject(5)).toThrowErrorMatchingSnapshot();
+    expect(() => isEmptyObject({ a: 1 })).toThrowErrorMatchingSnapshot();
+    expect(() => isSimpleObject({ a: 1 })).toThrowErrorMatchingSnapshot();
     expect(() =>
       isNestedObject({ num: 1, arr: [1, "b"], obj: { a: 2 } })
-    ).toThrow(
-      new CheckError({
-        name: `isVal({"num":1,"arr":[1,"b"],"obj":{"a":1}})`,
-        value: { num: 1, arr: [1, "b"], obj: { a: 2 } },
-        path: [`isVal({"num":1,"arr":[1,"b"],"obj":{"a":1}})`],
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe("isObjectWithShape", () => {
+  const isPerson = isObjectWithShape(
+    {
+      req: {
+        firstName: isString,
+        surname: isString,
+        dateOfBirth: isInteger,
+      },
+      opt: {
+        maidenName: isString,
+      },
+    },
+    { name: "isPerson" }
+  );
+  test(`passing object with correct shape returns object`, () => {
+    expect(
+      isPerson({
+        firstName: "John",
+        surname: "Doe",
+        dateOfBirth: 1990,
       })
+    ).toEqual({
+      firstName: "John",
+      surname: "Doe",
+      dateOfBirth: 1990,
+    });
+
+    expect(
+      isPerson({
+        firstName: "Jane",
+        surname: "Doe",
+        dateOfBirth: 1990,
+        maidenName: "Smith",
+      })
+    ).toEqual({
+      firstName: "Jane",
+      surname: "Doe",
+      dateOfBirth: 1990,
+      maidenName: "Smith",
+    });
+  });
+
+  test(`passing nested object with correct shape returns nested object`, () => {
+    const isCarShape = isObjectWithShape({
+      req: {
+        seats: isObjectWithShape({
+          req: {
+            number: isInteger,
+            trim: isString,
+          },
+        }),
+        doors: isInteger,
+      },
+      opt: {
+        engine: isObjectWithShape({
+          req: {
+            size: isInteger,
+            aspiration: isString,
+            fuel: isString,
+          },
+        }),
+      },
+    });
+    expect(
+      isCarShape({
+        seats: {
+          number: 4,
+          trim: "cloth",
+        },
+        doors: 4,
+        engine: {
+          size: 1900,
+          aspiration: "turbocharged",
+          fuel: "diesel",
+        },
+      })
+    ).toEqual({
+      seats: {
+        number: 4,
+        trim: "cloth",
+      },
+      doors: 4,
+      engine: {
+        size: 1900,
+        aspiration: "turbocharged",
+        fuel: "diesel",
+      },
+    });
+  });
+
+  test(`passing object missing required key throws CheckError`, () => {
+    expect(() =>
+      isPerson({
+        firstName: "John",
+        surname: "Doe",
+      })
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing object with wrong property in req throws error`, () => {
+    const isPerson = isObjectWithShape(
+      { req: { firstName: isString } },
+      { name: "isPerson" }
     );
+    expect(() => isPerson({ firstName: 5 })).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing object with wrong property in opt throws error`, () => {
+    const isPerson = isObjectWithShape(
+      { req: { firstName: isString }, opt: { dateOfBirth: isInteger } },
+      { name: "isPerson" }
+    );
+
+    expect(() =>
+      isPerson({ firstName: "Jane", dateOfBirth: 199.5 })
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing object with nested wrong property in req throws error`, () => {
+    const isName = isObjectWithShape(
+      {
+        req: {
+          firstName: isString,
+          surname: isString,
+        },
+      },
+      { name: "isName" }
+    );
+    const isPerson = isObjectWithShape(
+      {
+        req: {
+          name: isName,
+        },
+      },
+      { name: "isPerson" }
+    );
+
+    expect(() =>
+      isPerson({ name: { firstName: "John", surname: 5 } })
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing object with nested missing property in req throws error`, () => {
+    const isName = isObjectWithShape(
+      {
+        req: {
+          firstName: isString,
+          surname: isString,
+        },
+      },
+      { name: "isName" }
+    );
+    const isPerson = isObjectWithShape(
+      {
+        req: {
+          name: isName,
+        },
+      },
+      { name: "isPerson" }
+    );
+
+    expect(() =>
+      isPerson({ name: { firstName: "John" } })
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test(`passing object with nested wrong property in opt throws error`, () => {
+    const isName = isObjectWithShape(
+      {
+        req: {
+          firstName: isString,
+          surname: isString,
+        },
+        opt: {
+          title: isString,
+        },
+      },
+      { name: "isName" }
+    );
+    const isPerson = isObjectWithShape(
+      {
+        req: {
+          name: isName,
+        },
+      },
+      { name: "isPerson" }
+    );
+
+    expect(() =>
+      isPerson({ name: { firstName: "John", surname: "Smith", title: false } })
+    ).toThrowErrorMatchingSnapshot();
   });
 });

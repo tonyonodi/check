@@ -1,115 +1,239 @@
 import isEqual from "lodash.isequal";
 
 export class CheckError {
-  constructor({ name, value, path }) {
-    this.name = name;
-    this.value = value;
+  constructor({ value, path, reason }) {
+    this.value = value; // not sure if we need this
     this.path = path;
+    this.reason = reason;
+  }
+
+  get message() {
+    const { path, reason } = this;
+    const pathEnd = path[path.length - 1];
+    const printedPath = path.join("\n\t");
+
+    return `CheckError: check "${pathEnd}" ${reason} at:\n\t${printedPath}`;
   }
 }
 
-export const checkFromPredicate = (name, predicate) => value => {
-  let passed, reason;
-  try {
-    passed = predicate(value);
-  } catch (error) {
-    passed = false;
-    reason = error;
+const print = value => {
+  switch (typeof value) {
+    case "object":
+      return JSON.stringify(value);
+    case "string":
+      return `"${value}"`;
+    default:
+      return value;
   }
-  if (passed) {
+};
+
+export const isNumber = value => {
+  const passed = typeof value === "number";
+  if (!passed) {
+    throw new CheckError({
+      value,
+      path: ["isNumber"],
+      reason: `expected a number but received \n\n\t${print(value)}\n\n`,
+    });
+  } else {
     return value;
   }
-
-  const path =
-    reason && reason instanceof CheckError ? [name, ...reason.path] : [name];
-
-  const error = new CheckError({
-    name,
-    value,
-    path,
-  });
-
-  throw error;
 };
 
-export const isNumber = checkFromPredicate(
-  "isNumber",
-  x => typeof x === "number"
-);
-
-export const isInteger = checkFromPredicate("isInteger", x =>
-  Number.isInteger(x)
-);
-
-export const isString = checkFromPredicate(
-  "isString",
-  x => typeof x === "string"
-);
-
-export const isBool = checkFromPredicate("isBool", x => typeof x === "boolean");
-
-export const isVal = val =>
-  checkFromPredicate(`isVal(${JSON.stringify(val)})`, x => isEqual(x, val));
-
-export const isInstanceOf = constructor => x => x instanceof constructor;
-
-export const and = (...predicates) => (...args) => {
-  return predicates.every(fn => fn(...args));
-};
-
-export const or = (...predicates) => (...args) => {
-  const passed = predicates.some(predicate => {
-    try {
-      predicate(...args);
-    } catch (_) {
-      return false;
-    }
-    return true;
-  });
-};
-
-export const isObjectWithShape = shape => object => {
-  if (typeof object !== "object") {
-    throw new Error();
+export const isInteger = value => {
+  const passed = Number.isInteger(value);
+  if (!passed) {
+    throw new CheckError({
+      value,
+      path: ["isInteger"],
+      reason: `expected an integer but received \n\n\t${print(value)}\n\n`,
+    });
+  } else {
+    return value;
   }
-  const { req, opt } = shape;
-  for (const key in req) {
-    const testFn = req[key];
-    const value = object[key];
-    const passed = testFn(value);
+};
+
+export const isString = value => {
+  const passed = typeof value === "string";
+  if (!passed) {
+    throw new CheckError({
+      value,
+      path: ["isString"],
+      reason: `expected a string but received \n\n\t${print(value)}\n\n`,
+    });
+  } else {
+    return value;
+  }
+};
+
+export const isBool = value => {
+  const passed = typeof value === "boolean";
+  if (!passed) {
+    throw new CheckError({
+      value,
+      path: ["isBool"],
+      reason: `expected a boolean but received \n\n\t${print(value)}\n\n`,
+    });
+  } else {
+    return value;
+  }
+};
+
+const isValReason = (expected, value) => {
+  return `expected value
+
+  ${print(expected)}
+  
+but received
+
+  ${print(value)}
+  
+`;
+};
+
+export const isVal = expected => value => {
+  const passed = isEqual(value, expected);
+  if (!passed) {
+    const reason = isValReason(expected, value);
+    throw new CheckError({
+      value,
+      path: [`isVal(${expected})`],
+      reason,
+    });
+  } else {
+    return value;
+  }
+};
+
+export const isInstanceOf = constructor => {
+  try {
+    new constructor();
+  } catch (error) {
+    if (/ is not a constructor$/.test(error.message)) {
+      const restLength = " is not a constructor".length;
+      const valueLength = error.message.length - restLength;
+      const valueName = error.message.substr(0, valueLength);
+      throw new Error(
+        "TypeError",
+        `couldn't create isInstanceOf because ${valueName} is not a constructor`
+      );
+    } else {
+      throw error;
+    }
+  }
+
+  return value => {
+    const passed = value instanceof constructor;
     if (!passed) {
-      throw new Error();
+      const constructorName =
+        constructor && cosntructor.name ? cosntructor.name : "unknown";
+      new CheckError({
+        value,
+        path: [`isInstanceOf(${constructorName})`],
+        reason,
+      });
+    } else {
+      return value;
     }
-  }
-  for (const key in opt) {
-    const hasProperty = object.hasOwnProperty(key);
-    if (hasProperty) {
-      const testFn = req[key];
-      const value = object[key];
-      const passed = testFn(value);
-      if (!passed) {
-        throw new Error();
-      }
-    }
-  }
-
-  return object;
+  };
 };
 
-// ProjectRecord
-// isObjectWithShape({
-//   req: {
-//     _id: string,
-//     schema_version: string,
-//     name: string,
-//     description: string,
-//     dateCreated: instanceOf(Date),
-//     archived: isBool,
-//     html: isInstanceOf(FileRecord),
-//     javascript: isInstanceOf(FileRecord),
-//     css: isInstanceOf(FileRecord),
-//   },
-//   opt: {
-//     _rev: string,
-//   },
-// });
+export const isObjectWithShape = (shape, options) => {
+  if (typeof shape !== "object") {
+    throw new Error("TypeError", "isObjectWithShape expects an object");
+  }
+
+  if (shape.req && typeof shape.req !== "object") {
+    throw new Error(
+      "TypeError",
+      `isObjectWithShape expects property "req" of first argument to be an object`
+    );
+  }
+  if (shape.opt && typeof shape.opt !== "object") {
+    throw new Error(
+      "TypeError",
+      `isObjectWithShape expects property "opt" of first argument to be an object`
+    );
+  }
+  if (!shape.req && !shape.opt) {
+    throw new Error(
+      "TypeError",
+      `isObjectWithShape expects an object with at least one of the following properties: "opt" or "req"`
+    );
+  }
+
+  return object => {
+    const name =
+      typeof (options && options.name) === "string"
+        ? options.name
+        : "isObjectWithShape";
+    if (typeof object !== "object") {
+      throw new CheckError({
+        name,
+        value: object,
+        path: [name],
+      });
+    }
+
+    const testProperty = (propertyName, propertyValue, propertyCheck) => {
+      try {
+        propertyCheck(propertyValue);
+      } catch (error) {
+        const path =
+          error instanceof CheckError
+            ? [...error.path, `${name}.${propertyName}`]
+            : [`${name}.${propertyName}`];
+
+        const reason = error.reason
+          ? error.reason
+          : `an unkown error occurred checking the value of ${propertyName}`;
+
+        throw new CheckError({
+          value: propertyValue,
+          path,
+          reason,
+        });
+      }
+    };
+
+    const testReqOrOpt = (shape, isRequired) => {
+      for (const key in shape) {
+        const hasProperty = object.hasOwnProperty(key);
+        if (!hasProperty && isRequired) {
+          throw new CheckError({
+            path: [`${name}.${key}`],
+            reason: `expected a property "${key}"`,
+          });
+        }
+        if (hasProperty) {
+          testProperty(key, object[key], shape[key]);
+        }
+      }
+    };
+
+    const { req, opt } = shape;
+    if (req) {
+      testReqOrOpt(req, true);
+    }
+    if (opt) {
+      testReqOrOpt(opt, false);
+    }
+
+    return object;
+  };
+};
+
+// export const and = (...predicates) => (...args) => {
+//   return predicates.every(fn => fn(...args));
+// };
+
+// export const or = (...predicates) => (...args) => {
+//   const passed = predicates.some(predicate => {
+//     try {
+//       predicate(...args);
+//     } catch (_) {
+//       return false;
+//     }
+//     return true;
+//   });
+// };
