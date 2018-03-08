@@ -4,7 +4,7 @@ A package for checking that data matches the criteria you expect it to.
 
 ## Predicate
 
-In Cheque a predicate is a pure function that takes in a value and returns true or false depending on whether or not the value passed the predicate's test.
+In JS-Check a predicate is a pure function that takes in a value and returns true or false depending on whether or not the value passed the predicate's test.
 
 For Example
 
@@ -17,7 +17,7 @@ const isGreaterThan5Pred = x => typeof x === "number" && x > 5;
 A check can be created with the function `checkFromPredicate`. This function takes in a name and a predicate and returns a check function. For Example:
 
 ```javascript
-import { checkFromPredicate } from "cheque";
+import { checkFromPredicate } from "js-check";
 
 const isGreaterThan5Pred = x => typeof x === "number" && x > 5;
 
