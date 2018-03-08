@@ -1,4 +1,4 @@
-# Cheque
+# JS-Check
 
 A package for checking that data matches the criteria you expect it to.
 
