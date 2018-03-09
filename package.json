@@ -1,7 +1,7 @@
 {
   "name": "@tonyonodi/check",
   "description": "A package for dynamically checking that data matches the criteria you expect it to.",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {

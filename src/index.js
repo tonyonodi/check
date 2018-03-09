@@ -167,7 +167,7 @@ export const isInstanceOf = constructor => {
     const passed = value instanceof constructor;
     if (!passed) {
       const constructorName =
-        constructor && cosntructor.name ? cosntructor.name : "unknown";
+        constructor && constructor.name ? constructor.name : "unknown";
       new CheckError({
         value,
         path: [`isInstanceOf(${constructorName})`],
@@ -227,7 +227,9 @@ export const isObjectWithShape = (shape, options) => {
 
         const reason = error.reason
           ? error.reason
-          : `an unkown error occurred checking the value of ${propertyName}`;
+          : `threw the error \n\n${error.name}:${
+              error.message
+            }\n\nwhen checking the value of ${propertyName}`;
 
         throw new CheckError({
           value: propertyValue,
