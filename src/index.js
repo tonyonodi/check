@@ -168,7 +168,13 @@ export const isInstanceOf = constructor => {
     if (!passed) {
       const constructorName =
         constructor && constructor.name ? constructor.name : "unknown";
-      new CheckError({
+
+      const reason = `expected an instance of instance of ${constructorName} but got
+      
+  ${print(value)}
+  
+  `;
+      throw new CheckError({
         value,
         path: [`isInstanceOf(${constructorName})`],
         reason,
@@ -225,11 +231,12 @@ export const isObjectWithShape = (shape, options) => {
             ? [...error.path, `${name}.${propertyName}`]
             : [`${name}.${propertyName}`];
 
-        const reason = error.reason
-          ? error.reason
-          : `threw the error \n\n${error.name}:${
-              error.message
-            }\n\nwhen checking the value of ${propertyName}`;
+        const reason =
+          error && error.reason
+            ? error.reason
+            : `threw the error \n\n${error && error.name ? error.name : error}${
+                error && error.name ? ": " + error.message : ""
+              }\n\nwhen checking the value of ${propertyName}`;
 
         throw new CheckError({
           value: propertyValue,

@@ -5,6 +5,7 @@ import {
   isString,
   isBool,
   isVal,
+  isInstanceOf,
   isObjectWithShape,
   isArray,
   isArrayOf,
@@ -112,6 +113,16 @@ describe("isVal", () => {
     expect(() =>
       isNestedObject({ num: 1, arr: [1, "b"], obj: { a: 2 } })
     ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe("isInstanceOf", () => {
+  test(`passing correct value returns value`, () => {
+    expect(isInstanceOf(Date)(new Date(0))).toEqual(new Date(0));
+  });
+
+  test(`passing incorrect value throws CheckError`, () => {
+    expect(() => isInstanceOf(Date)(5)).toThrowErrorMatchingSnapshot();
   });
 });
 

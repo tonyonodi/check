@@ -78,6 +78,15 @@ exports[`isBool passing non-boolean truthy values throws a CheckError 3`] = `
 	isBool"
 `;
 
+exports[`isInstanceOf passing incorrect value throws CheckError 1`] = `
+"CheckError: check \\"isInstanceOf(Date)\\" expected an instance of instance of Date but got
+      
+  5
+  
+   at:
+	isInstanceOf(Date)"
+`;
+
 exports[`isInteger passing float throws a CheckError 1`] = `
 "CheckError: check \\"isInteger\\" expected an integer but received 
 
