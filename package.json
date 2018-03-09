@@ -1,5 +1,6 @@
 {
-  "name": "js-check",
+  "name": "@tonyonodi/check",
+  "description": "A package for dynamically checking that data matches the criteria you expect it to.",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
