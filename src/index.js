@@ -146,6 +146,14 @@ export const isArrayOf = (check, options) => value => {
   return value;
 };
 
+export const maybe = check => value => {
+  if (value === undefined) {
+    return undefined;
+  } else {
+    return check(value);
+  }
+};
+
 export const isInstanceOf = constructor => {
   try {
     new constructor();

@@ -9,6 +9,7 @@ import {
   isObjectWithShape,
   isArray,
   isArrayOf,
+  maybe,
 } from "./index";
 
 describe("isNumber", () => {
@@ -141,6 +142,20 @@ describe("isArrayOf", () => {
     expect(() =>
       isArrayOfStrings(["a", 2, "c"])
     ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe("maybe", () => {
+  test(`passing undefined returns undefined`, () => {
+    expect(maybe(isString)(undefined)).toEqual(undefined);
+  });
+
+  test(`passing value with correct type returns value`, () => {
+    expect(maybe(isString)("a")).toEqual("a");
+  });
+
+  test(`passing value with incorrect type throws CheckError`, () => {
+    expect(() => maybe(isString)(5)).toThrowErrorMatchingSnapshot();
   });
 });
 

@@ -279,3 +279,12 @@ but received
  at:
 	isVal([object Object])"
 `;
+
+exports[`maybe passing value with incorrect type throws CheckError 1`] = `
+"CheckError: check \\"isString\\" expected a string but received 
+
+	5
+
+ at:
+	isString"
+`;
